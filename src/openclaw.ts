@@ -157,12 +157,16 @@ export class DataDiveSkill {
 
   async createDive(opts: {
     keyword: string;
+    asin: string;
     marketplace?: string;
-    asins?: string[];
+    numberOfCompetitors?: number;
   }): Promise<UniversalEnvelope> {
     try {
       const raw = await createDive(this.client, opts);
-      return toUniversalEnvelope("dive_created", transformPassthrough(raw));
+      return toUniversalEnvelope("dive_created", {
+        dive_id: raw.data.diveId,
+        estimated_completion: raw.data.estimatedCompletionDate,
+      });
     } catch (err) {
       return this.handleError(err);
     }
@@ -170,20 +174,28 @@ export class DataDiveSkill {
 
   async createRankRadar(opts: {
     asin: string;
+    nicheId: string;
     marketplace?: string;
+    numberOfKeywords?: number;
   }): Promise<UniversalEnvelope> {
     try {
       const raw = await createRankRadar(this.client, opts);
-      return toUniversalEnvelope("rank_radar_created", transformPassthrough(raw));
+      return toUniversalEnvelope("rank_radar_created", {
+        rank_radar_id: raw.data.rankRadarId,
+      });
     } catch (err) {
       return this.handleError(err);
     }
   }
 
-  async triggerAiCopywriter(nicheId: string): Promise<UniversalEnvelope> {
+  async triggerAiCopywriter(nicheId: string, prompt?: string): Promise<UniversalEnvelope> {
     try {
-      const raw = await triggerAiCopywriter(this.client, nicheId);
-      return toUniversalEnvelope("ai_copywriter", transformPassthrough(raw));
+      const raw = await triggerAiCopywriter(this.client, nicheId, prompt);
+      return toUniversalEnvelope("ai_copywriter", {
+        title: raw.data.title,
+        bullets: raw.data.bullets,
+        description: raw.data.description,
+      });
     } catch (err) {
       return this.handleError(err);
     }

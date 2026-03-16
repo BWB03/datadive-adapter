@@ -253,18 +253,42 @@ export const GetDiveStatusResponseSchema = z.unknown();
 
 // --- 9. Create Niche Dive ---
 // POST /v1/niches/dives
+// Requires: keyword, marketplace, asin, numberOfCompetitors (min 2)
+// Returns: { success, data: { diveId, estimatedCompletionDate } }
 
-export const CreateDiveResponseSchema = z.unknown();
+export const CreateDiveResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    diveId: z.string(),
+    estimatedCompletionDate: z.string(),
+  }),
+});
 
 // --- 10. Create Rank Radar ---
 // POST /v1/niches/rank-radars
+// Requires: asin, marketplace, nicheId, numberOfKeywords (min 1)
+// Returns: { success, data: { rankRadarId } }
 
-export const CreateRankRadarResponseSchema = z.unknown();
+export const CreateRankRadarResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    rankRadarId: z.string(),
+  }),
+});
 
 // --- 11. AI Copywriter ---
 // POST /v1/niches/{nicheId}/ai-copywriter
+// Requires: prompt (cosmo | ranking-juice | nlp | cosmo-rufus)
+// Returns: { data: { rankingJuice, bullets, description, title } }
 
-export const AiCopywriterResponseSchema = z.unknown();
+export const AiCopywriterResponseSchema = z.object({
+  data: z.object({
+    rankingJuice: z.unknown().optional(),
+    bullets: z.array(z.string()),
+    description: z.string(),
+    title: z.string(),
+  }).passthrough(),
+});
 
 // --- 12. Delete Niche ---
 // DELETE /v1/niches/{nicheId}

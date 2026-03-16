@@ -104,14 +104,16 @@ export async function createDive(
   client: DataDiveClient,
   opts: {
     keyword: string;
+    asin: string;
     marketplace?: string;
-    asins?: string[];
+    numberOfCompetitors?: number;
   }
 ) {
   return client.post("/v1/niches/dives", CreateDiveResponseSchema, {
     keyword: opts.keyword,
+    asin: opts.asin,
     marketplace: opts.marketplace ?? "com",
-    ...(opts.asins?.length ? { asins: opts.asins } : {}),
+    numberOfCompetitors: opts.numberOfCompetitors ?? 17,
   });
 }
 
@@ -119,22 +121,28 @@ export async function createRankRadar(
   client: DataDiveClient,
   opts: {
     asin: string;
+    nicheId: string;
     marketplace?: string;
+    numberOfKeywords?: number;
   }
 ) {
   return client.post("/v1/niches/rank-radars", CreateRankRadarResponseSchema, {
     asin: opts.asin,
+    nicheId: opts.nicheId,
     marketplace: opts.marketplace ?? "com",
+    numberOfKeywords: opts.numberOfKeywords ?? 50,
   });
 }
 
 export async function triggerAiCopywriter(
   client: DataDiveClient,
-  nicheId: string
+  nicheId: string,
+  prompt?: string
 ) {
   return client.post(
     `/v1/niches/${encodeURIComponent(nicheId)}/ai-copywriter`,
-    AiCopywriterResponseSchema
+    AiCopywriterResponseSchema,
+    { prompt: prompt ?? "ranking-juice" }
   );
 }
 

@@ -204,16 +204,20 @@ server.tool(
 // --- 9. Create Dive ---
 server.tool(
   "datadive_create_dive",
-  "Create a new Niche Dive research job. Kicks off keyword research for a given search term. Use datadive_get_dive_status to check progress.",
+  "Create a new Niche Dive research job for an ASIN. Kicks off keyword and competitor research. Use datadive_get_dive_status to check progress.",
   {
     keyword: z.string().describe("The search term / hero keyword to research"),
+    asin: z.string().describe("The Amazon ASIN to dive on"),
     marketplace: z.string().optional().describe("Amazon marketplace (default: com)"),
-    asins: z.array(z.string()).optional().describe("Optional list of competitor ASINs to include"),
+    number_of_competitors: z.number().int().min(2).optional().describe("Number of competitors to analyze (default: 17, min: 2)"),
   },
-  async ({ keyword, marketplace, asins }) => {
+  async ({ keyword, asin, marketplace, number_of_competitors }) => {
     try {
-      const raw = await createDive(client, { keyword, marketplace, asins });
-      const envelope = toUniversalEnvelope("dive_created", transformPassthrough(raw));
+      const raw = await createDive(client, { keyword, asin, marketplace, numberOfCompetitors: number_of_competitors });
+      const envelope = toUniversalEnvelope("dive_created", {
+        dive_id: raw.data.diveId,
+        estimated_completion: raw.data.estimatedCompletionDate,
+      });
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);
@@ -224,15 +228,19 @@ server.tool(
 // --- 10. Create Rank Radar ---
 server.tool(
   "datadive_create_rank_radar",
-  "Create a new Rank Radar keyword tracker for an ASIN. Tracks keyword ranking positions over time.",
+  "Create a new Rank Radar keyword tracker for an ASIN within a niche. Tracks keyword ranking positions over time.",
   {
     asin: z.string().describe("The Amazon ASIN to track"),
+    niche_id: z.string().describe("The DataDive niche ID"),
     marketplace: z.string().optional().describe("Amazon marketplace (default: com)"),
+    number_of_keywords: z.number().int().min(1).optional().describe("Number of keywords to track (default: 50)"),
   },
-  async ({ asin, marketplace }) => {
+  async ({ asin, niche_id, marketplace, number_of_keywords }) => {
     try {
-      const raw = await createRankRadar(client, { asin, marketplace });
-      const envelope = toUniversalEnvelope("rank_radar_created", transformPassthrough(raw));
+      const raw = await createRankRadar(client, { asin, nicheId: niche_id, marketplace, numberOfKeywords: number_of_keywords });
+      const envelope = toUniversalEnvelope("rank_radar_created", {
+        rank_radar_id: raw.data.rankRadarId,
+      });
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);
@@ -243,12 +251,19 @@ server.tool(
 // --- 11. AI Copywriter ---
 server.tool(
   "datadive_ai_copywriter",
-  "Trigger the AI Copywriter for a niche. Generates optimized listing copy based on keyword research data.",
-  { niche_id: z.string().describe("The DataDive niche ID") },
-  async ({ niche_id }) => {
+  "Generate optimized listing copy for a niche using AI. Returns title, bullets, and description optimized for ranking juice.",
+  {
+    niche_id: z.string().describe("The DataDive niche ID"),
+    prompt: z.enum(["cosmo", "ranking-juice", "nlp", "cosmo-rufus"]).optional().describe("Copywriting strategy (default: ranking-juice)"),
+  },
+  async ({ niche_id, prompt }) => {
     try {
-      const raw = await triggerAiCopywriter(client, niche_id);
-      const envelope = toUniversalEnvelope("ai_copywriter", transformPassthrough(raw));
+      const raw = await triggerAiCopywriter(client, niche_id, prompt);
+      const envelope = toUniversalEnvelope("ai_copywriter", {
+        title: raw.data.title,
+        bullets: raw.data.bullets,
+        description: raw.data.description,
+      });
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);
