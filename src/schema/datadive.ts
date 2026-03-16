@@ -246,3 +246,32 @@ export const GetRankRadarResponseSchema = z.unknown();
 // Success shape: unknown (need a real dive ID to discover)
 
 export const GetDiveStatusResponseSchema = z.unknown();
+
+// =====================
+// Phase 2: Write Endpoints
+// =====================
+
+// --- 9. Create Niche Dive ---
+// POST /v1/niches/dives
+
+export const CreateDiveResponseSchema = z.unknown();
+
+// --- 10. Create Rank Radar ---
+// POST /v1/niches/rank-radars
+
+export const CreateRankRadarResponseSchema = z.unknown();
+
+// --- 11. AI Copywriter ---
+// POST /v1/niches/{nicheId}/ai-copywriter
+
+export const AiCopywriterResponseSchema = z.unknown();
+
+// --- 12. Delete Niche ---
+// DELETE /v1/niches/{nicheId}
+
+export const DeleteNicheResponseSchema = z.unknown();
+
+// --- 13. Delete Rank Radar ---
+// DELETE /v1/niches/rank-radars/{rankRadarId}
+
+export const DeleteRankRadarResponseSchema = z.unknown();

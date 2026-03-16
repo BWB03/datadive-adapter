@@ -82,4 +82,86 @@ export class DataDiveClient {
       clearTimeout(timer);
     }
   }
+
+  async post<T>(path: string, schema: ZodSchema<T>, body?: Record<string, unknown>): Promise<T> {
+    await this.bucket.acquire();
+
+    const url = new URL(path, this.baseUrl);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const res = await fetch(url.toString(), {
+        method: "POST",
+        headers: {
+          "x-api-key": this.apiKey,
+          "Content-Type": "application/json",
+        },
+        body: body ? JSON.stringify(body) : undefined,
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => undefined);
+        throw new DataDiveApiError(
+          `DataDive API ${res.status}: ${res.statusText}`,
+          res.status,
+          text
+        );
+      }
+
+      const json = await res.json();
+      return schema.parse(json);
+    } catch (err) {
+      if (err instanceof DataDiveApiError) throw err;
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new DataDiveApiError(
+          `DataDive API request timed out after ${this.timeoutMs}ms`,
+          408
+        );
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async delete<T>(path: string, schema: ZodSchema<T>): Promise<T> {
+    await this.bucket.acquire();
+
+    const url = new URL(path, this.baseUrl);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const res = await fetch(url.toString(), {
+        method: "DELETE",
+        headers: { "x-api-key": this.apiKey },
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => undefined);
+        throw new DataDiveApiError(
+          `DataDive API ${res.status}: ${res.statusText}`,
+          res.status,
+          text
+        );
+      }
+
+      const json = await res.json();
+      return schema.parse(json);
+    } catch (err) {
+      if (err instanceof DataDiveApiError) throw err;
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new DataDiveApiError(
+          `DataDive API request timed out after ${this.timeoutMs}ms`,
+          408
+        );
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
 }

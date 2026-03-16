@@ -12,6 +12,11 @@ import {
   listRankRadars,
   getRankRadar,
   getDiveStatus,
+  createDive,
+  createRankRadar,
+  triggerAiCopywriter,
+  deleteNiche,
+  deleteRankRadar,
 } from "./adapter/endpoints.js";
 import {
   toUniversalEnvelope,
@@ -185,6 +190,97 @@ server.tool(
     try {
       const raw = await getDiveStatus(client, dive_id);
       const envelope = toUniversalEnvelope("dive_status", transformPassthrough(raw));
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+// =====================
+// Phase 2: Write Tools
+// =====================
+
+// --- 9. Create Dive ---
+server.tool(
+  "datadive_create_dive",
+  "Create a new Niche Dive research job. Kicks off keyword research for a given search term. Use datadive_get_dive_status to check progress.",
+  {
+    keyword: z.string().describe("The search term / hero keyword to research"),
+    marketplace: z.string().optional().describe("Amazon marketplace (default: com)"),
+    asins: z.array(z.string()).optional().describe("Optional list of competitor ASINs to include"),
+  },
+  async ({ keyword, marketplace, asins }) => {
+    try {
+      const raw = await createDive(client, { keyword, marketplace, asins });
+      const envelope = toUniversalEnvelope("dive_created", transformPassthrough(raw));
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+// --- 10. Create Rank Radar ---
+server.tool(
+  "datadive_create_rank_radar",
+  "Create a new Rank Radar keyword tracker for an ASIN. Tracks keyword ranking positions over time.",
+  {
+    asin: z.string().describe("The Amazon ASIN to track"),
+    marketplace: z.string().optional().describe("Amazon marketplace (default: com)"),
+  },
+  async ({ asin, marketplace }) => {
+    try {
+      const raw = await createRankRadar(client, { asin, marketplace });
+      const envelope = toUniversalEnvelope("rank_radar_created", transformPassthrough(raw));
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+// --- 11. AI Copywriter ---
+server.tool(
+  "datadive_ai_copywriter",
+  "Trigger the AI Copywriter for a niche. Generates optimized listing copy based on keyword research data.",
+  { niche_id: z.string().describe("The DataDive niche ID") },
+  async ({ niche_id }) => {
+    try {
+      const raw = await triggerAiCopywriter(client, niche_id);
+      const envelope = toUniversalEnvelope("ai_copywriter", transformPassthrough(raw));
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+// --- 12. Delete Niche ---
+server.tool(
+  "datadive_delete_niche",
+  "Delete a niche and all its associated research data. This action cannot be undone.",
+  { niche_id: z.string().describe("The DataDive niche ID to delete") },
+  async ({ niche_id }) => {
+    try {
+      const raw = await deleteNiche(client, niche_id);
+      const envelope = toUniversalEnvelope("niche_deleted", transformPassthrough(raw));
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+// --- 13. Delete Rank Radar ---
+server.tool(
+  "datadive_delete_rank_radar",
+  "Delete a Rank Radar keyword tracker. This action cannot be undone.",
+  { rank_radar_id: z.string().describe("The Rank Radar tracker ID to delete") },
+  async ({ rank_radar_id }) => {
+    try {
+      const raw = await deleteRankRadar(client, rank_radar_id);
+      const envelope = toUniversalEnvelope("rank_radar_deleted", transformPassthrough(raw));
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);

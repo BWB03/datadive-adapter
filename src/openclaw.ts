@@ -8,6 +8,11 @@ import {
   listRankRadars,
   getRankRadar,
   getDiveStatus,
+  createDive,
+  createRankRadar,
+  triggerAiCopywriter,
+  deleteNiche,
+  deleteRankRadar,
 } from "./adapter/endpoints.js";
 import {
   toUniversalEnvelope,
@@ -143,6 +148,60 @@ export class DataDiveSkill {
     try {
       const raw = await getDiveStatus(this.client, diveId);
       return toUniversalEnvelope("dive_status", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  // Phase 2: Write methods
+
+  async createDive(opts: {
+    keyword: string;
+    marketplace?: string;
+    asins?: string[];
+  }): Promise<UniversalEnvelope> {
+    try {
+      const raw = await createDive(this.client, opts);
+      return toUniversalEnvelope("dive_created", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async createRankRadar(opts: {
+    asin: string;
+    marketplace?: string;
+  }): Promise<UniversalEnvelope> {
+    try {
+      const raw = await createRankRadar(this.client, opts);
+      return toUniversalEnvelope("rank_radar_created", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async triggerAiCopywriter(nicheId: string): Promise<UniversalEnvelope> {
+    try {
+      const raw = await triggerAiCopywriter(this.client, nicheId);
+      return toUniversalEnvelope("ai_copywriter", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async deleteNiche(nicheId: string): Promise<UniversalEnvelope> {
+    try {
+      const raw = await deleteNiche(this.client, nicheId);
+      return toUniversalEnvelope("niche_deleted", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async deleteRankRadar(rankRadarId: string): Promise<UniversalEnvelope> {
+    try {
+      const raw = await deleteRankRadar(this.client, rankRadarId);
+      return toUniversalEnvelope("rank_radar_deleted", transformPassthrough(raw));
     } catch (err) {
       return this.handleError(err);
     }
