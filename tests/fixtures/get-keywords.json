@@ -1,0 +1,26 @@
+{
+  "data": {
+    "keywords": [
+      {
+        "keyword": "zinc supplements",
+        "searchVolume": 240842,
+        "relevancy": 1,
+        "asinRanks": {
+          "B0001VKDDM": 19,
+          "B00083B1DY": 4,
+          "B000GCQ8X0": 3
+        }
+      },
+      {
+        "keyword": "zinc supplements for men",
+        "searchVolume": 3404,
+        "relevancy": 0.88,
+        "asinRanks": {
+          "B000GCQ8X0": 2,
+          "B0098U0QC0": 5
+        }
+      }
+    ],
+    "latestResearchDate": "2024-01-09T21:05:38.148Z"
+  }
+}

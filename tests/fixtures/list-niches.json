@@ -1,0 +1,24 @@
+{
+  "currentPage": 1,
+  "pageSize": 20,
+  "hasNext": false,
+  "hasPrev": false,
+  "lastPage": 1,
+  "total": 2,
+  "data": [
+    {
+      "nicheId": "z515cGOFg3",
+      "heroKeyword": "dog hat",
+      "nicheLabel": "Dog-hat opportunity",
+      "marketplace": "com",
+      "latestResearchDate": "2026-03-14"
+    },
+    {
+      "nicheId": "abc123xyz",
+      "heroKeyword": "cat collar",
+      "nicheLabel": "Cat collar niche",
+      "marketplace": "com",
+      "latestResearchDate": null
+    }
+  ]
+}

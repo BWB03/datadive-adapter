@@ -1,0 +1,28 @@
+{
+  "data": {
+    "currentListing": {
+      "rankingJuice": 1902847,
+      "title": { "rankingJuice": 628271 },
+      "bullets": { "rankingJuice": 9017 },
+      "description": { "rankingJuice": 0 }
+    },
+    "optimizedListing": {
+      "rankingJuice": 2429811,
+      "title": { "rankingJuice": 758971 },
+      "bullets": { "rankingJuice": 51637 },
+      "description": { "rankingJuice": 49624 }
+    },
+    "competitors": [
+      {
+        "asin": "B0098U0QC0",
+        "listing": {
+          "rankingJuice": 1895870,
+          "title": { "rankingJuice": 625260 },
+          "bullets": { "rankingJuice": 9617 },
+          "description": { "rankingJuice": 856 }
+        }
+      }
+    ],
+    "latestResearchDate": "2024-01-09T21:05:38.148Z"
+  }
+}

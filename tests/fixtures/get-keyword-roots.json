@@ -1,0 +1,28 @@
+{
+  "data": {
+    "keywords": [
+      {
+        "keyword": "zinc",
+        "searchVolume": 365434,
+        "normalizedKeyword": "zinc",
+        "normalizedSearchVolume": 365434,
+        "relevancy": 0.82,
+        "cpr8dayGiveAways": null,
+        "competingProducts": 10000,
+        "numberOfexacts": 17,
+        "rankingJuice": 365434
+      },
+      {
+        "keyword": "zinc supplements",
+        "searchVolume": 240842,
+        "normalizedKeyword": "zinc supplement",
+        "normalizedSearchVolume": 252300,
+        "relevancy": 1,
+        "cpr8dayGiveAways": null,
+        "competingProducts": 5000,
+        "numberOfexacts": 7,
+        "rankingJuice": 614297
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "data": {
+    "marketplace": "com",
+    "statistics": {
+      "numKeywords": 4996,
+      "numVisibleKeywords": 168,
+      "numMaxVisibleKeywords": 500,
+      "totalSvOfKeywords": 5070506,
+      "totalSvOfVisibleKeywords": 934717,
+      "totalSvOfVisibleOutlierKeywords": 1730102,
+      "totalSvOfResidueKeywords": 2405687
+    },
+    "opportunityEvaluation": {
+      "competitionSvStrength": { "value": 0.82, "opportunity": "veryBadOpportunity" },
+      "competitionKwStrength": { "value": 0.47, "opportunity": "goodOpportunity" },
+      "numRelevantKeywords": { "value": 168, "opportunity": "veryGoodOpportunity" },
+      "numRelevantSearchVolume": 934717,
+      "medianDaysListed": { "value": 3689, "opportunity": "veryGoodOpportunity" },
+      "medianReviewCount": { "value": 8238, "opportunity": "veryBadOpportunity" },
+      "numLaunchKeywords": { "value": 96, "opportunity": "veryGoodOpportunity" },
+      "numLaunchSearchVolume": 176464
+    },
+    "benchmark": {},
+    "competitorsStrength": {},
+    "latestResearchDate": "2024-01-09T21:05:38.148Z",
+    "competitors": [
+      {
+        "asin": "B0098U0QC0",
+        "brand": "Garden of Life",
+        "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/5129AYBHcsS.jpg",
+        "rating": 4.8,
+        "reviewCount": 30041,
+        "listingCreationDate": 1347321600000,
+        "listingCreationDateEvaluation": "veryGood",
+        "price": 11.19,
+        "sales": 27468,
+        "revenue": 307366.92,
+        "outlierKws": 28,
+        "outlierSV": 159618,
+        "kwRankedOnP1": 158,
+        "kwRankedOnP1Percent": 0.94,
+        "kwRankedOnP1Evaluation": "veryBad",
+        "svRankedOnP1": 890725,
+        "svRankedOnP1Percent": 0.95,
+        "svRankedOnP1Evaluation": "veryBad",
+        "advertisedKws": 0,
+        "advertisedKwsPercent": 0,
+        "tosKwsAds": 0,
+        "tosKwsAdsPercent": 0,
+        "tosSvAds": 0,
+        "tosSvAdsPercent": 0,
+        "fulfillment": "AMZ",
+        "numberOfActiveSellers": 12,
+        "sellerCountry": "(Amazon)",
+        "listingRankingJuice": {
+          "value": 1895870,
+          "contribution": {
+            "title": { "rankingJuice": 625260, "weight": 3, "listingRankingJuice": 1875780 },
+            "bullets": { "rankingJuice": 9617, "weight": 2, "listingRankingJuice": 19234 },
+            "description": { "rankingJuice": 856, "weight": 1, "listingRankingJuice": 856 }
+          }
+        },
+        "numberOfVariations": 1,
+        "asinCatalog": null,
+        "category": "Health & Household",
+        "categoryTree": "Health & Household > Vitamins, Minerals & Supplements > Minerals > Multiminerals"
+      }
+    ]
+  }
+}
