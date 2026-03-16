@@ -33,7 +33,7 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
-Restart Claude Desktop. You'll see 8 DataDive tools available.
+Restart Claude Desktop. You'll see 13 DataDive tools available.
 
 ### Use as OpenClaw Skill
 
@@ -50,9 +50,21 @@ const keywords = await skill.getKeywords("nicheId");
 
 // Get competitor analysis
 const competitors = await skill.getCompetitors("nicheId");
+
+// Create a dive
+const dive = await skill.createDive({
+  keyword: "zinc supplements",
+  asin: "B0012ZQPKG",
+  numberOfCompetitors: 17,
+});
+
+// Generate optimized listing copy
+const copy = await skill.triggerAiCopywriter("nicheId", "ranking-juice");
 ```
 
 ## Available Tools
+
+### Read Tools (8)
 
 | Tool | Description | Required Params |
 |------|-------------|-----------------|
@@ -64,6 +76,38 @@ const competitors = await skill.getCompetitors("nicheId");
 | `datadive_list_rank_radars` | List all Rank Radar keyword trackers | `page?`, `page_size?` |
 | `datadive_get_rank_radar` | Keyword ranking data with historical positions | `rank_radar_id` |
 | `datadive_get_dive_status` | Check status of a Niche Dive research job | `dive_id` |
+
+### Write Tools (5)
+
+| Tool | Description | Required Params |
+|------|-------------|-----------------|
+| `datadive_create_dive` | Create a new Niche Dive research job for an ASIN | `keyword`, `asin`, `marketplace?`, `number_of_competitors?` |
+| `datadive_create_rank_radar` | Create a Rank Radar keyword tracker for an ASIN | `asin`, `niche_id`, `marketplace?`, `number_of_keywords?` |
+| `datadive_ai_copywriter` | Generate optimized listing copy using AI | `niche_id`, `prompt?` (cosmo, ranking-juice, nlp, cosmo-rufus) |
+| `datadive_delete_niche` | Delete a niche and all its research data | `niche_id` |
+| `datadive_delete_rank_radar` | Delete a Rank Radar tracker | `rank_radar_id` |
+
+## Example Prompts for Claude Desktop
+
+Once the MCP server is connected, just ask Claude naturally:
+
+### Research & Analysis
+- "List my DataDive niches"
+- "Show me the keywords for my zinc supplements niche"
+- "What competitors are in my zinc supplements niche?"
+- "Show me the ranking juice analysis for my zinc supplements niche"
+- "What are the keyword roots for my zinc supplements niche?"
+- "List my rank radar trackers"
+
+### Create & Build
+- "Run a dive on ASIN B0012ZQPKG for zinc supplements with 10 competitors"
+- "Create a rank radar for B0012ZQPKG in my zinc supplements niche, track 100 keywords"
+- "Generate optimized listing copy for my zinc supplements niche"
+- "Generate cosmo-rufus copy for my zinc supplements niche and compare it to the ranking-juice version"
+
+### Track & Monitor
+- "Check the status of my latest dive"
+- "Show me keyword rankings for my rank radar"
 
 ## Universal Output Schema
 
