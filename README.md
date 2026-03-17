@@ -171,4 +171,4 @@ The adapter pattern established here is the template for future adapters (Pacvue
 
 ## License
 
-Private — Voartex
+MIT — [Voartex](https://voartex.com)
