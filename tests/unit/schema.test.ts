@@ -82,6 +82,27 @@ describe("DataDive schemas", () => {
     expect(kw.asinRanks?.["B00083B1DY"]).toBe(4);
   });
 
+  it("parses competitor with object ASIN", () => {
+    const fixture = JSON.parse(JSON.stringify(getCompetitorsFixture));
+    fixture.data.competitors[0].asin = { asin: "B0098U0QC0", title: "Product" };
+    const result = GetCompetitorsResponseSchema.parse(fixture);
+    expect(result.data.competitors[0].asin).toEqual({ asin: "B0098U0QC0", title: "Product" });
+  });
+
+  it("parses ranking juices with object ASIN", () => {
+    const fixture = JSON.parse(JSON.stringify(getRankingJuicesFixture));
+    fixture.data.competitors[0].asin = { asin: "B0098U0QC0" };
+    const result = GetRankingJuicesResponseSchema.parse(fixture);
+    expect(result.data.competitors[0].asin).toEqual({ asin: "B0098U0QC0" });
+  });
+
+  it("parses rank radar with object ASIN", () => {
+    const fixture = JSON.parse(JSON.stringify(listRankRadarsFixture));
+    fixture.data.data[0].asin = { asin: "B09DCJJ9R3", title: "Dog Hat" };
+    const result = ListRankRadarsResponseSchema.parse(fixture);
+    expect(result.data.data[0].asin).toEqual({ asin: "B09DCJJ9R3", title: "Dog Hat" });
+  });
+
   it("allows passthrough fields on niche", () => {
     const extended = { ...listNichesFixture.data[0], extraField: "hello" };
     const result = NicheSchema.parse(extended);

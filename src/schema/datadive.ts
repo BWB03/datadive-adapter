@@ -70,7 +70,7 @@ const ListingRankingJuiceSchema = z.object({
 
 export const CompetitorSchema = z
   .object({
-    asin: z.string(),
+    asin: z.union([z.string(), z.object({}).passthrough()]),
     brand: z.string().nullable().optional(),
     imageUrl: z.string().nullable().optional(),
     rating: z.number().nullable().optional(),
@@ -165,7 +165,7 @@ const ListingJuiceSchema = z.object({
 });
 
 const JuiceCompetitorSchema = z.object({
-  asin: z.string(),
+  asin: z.union([z.string(), z.object({}).passthrough()]),
   listing: ListingJuiceSchema,
 });
 
@@ -211,7 +211,7 @@ export const GetKeywordRootsResponseSchema = z.object({
 export const RankRadarSchema = z
   .object({
     id: z.string(),
-    asin: z.string(),
+    asin: z.union([z.string(), z.object({}).passthrough()]),
     marketplace: z.string(),
     keywordCount: z.number().optional(),
     title: z.string().nullable().optional(),

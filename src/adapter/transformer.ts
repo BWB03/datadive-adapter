@@ -79,7 +79,7 @@ export function transformKeyword(raw: {
 }
 
 export function transformCompetitor(raw: {
-  asin: string;
+  asin: string | Record<string, unknown>;
   brand?: string | null;
   imageUrl?: string | null;
   rating?: number | null;
@@ -110,7 +110,7 @@ export function transformCompetitor(raw: {
   } | null;
 }) {
   return {
-    asin: raw.asin,
+    asin: extractAsin(raw.asin),
     brand: raw.brand ?? null,
     image_url: raw.imageUrl ?? null,
     rating: raw.rating ?? null,
@@ -191,7 +191,7 @@ export function transformRankingJuices(raw: {
     description: { rankingJuice: number };
   };
   competitors: Array<{
-    asin: string;
+    asin: string | Record<string, unknown>;
     listing: {
       rankingJuice: number;
       title: { rankingJuice: number };
@@ -205,7 +205,7 @@ export function transformRankingJuices(raw: {
     current_listing: transformListingJuice(raw.currentListing),
     optimized_listing: transformListingJuice(raw.optimizedListing),
     competitors: raw.competitors.map((c) => ({
-      asin: c.asin,
+      asin: extractAsin(c.asin),
       listing: transformListingJuice(c.listing),
     })),
     latest_research_date: raw.latestResearchDate ?? null,
@@ -234,9 +234,18 @@ export function transformKeywordRoot(raw: {
   };
 }
 
+function extractAsin(asin: string | Record<string, unknown>): string {
+  if (typeof asin === "string") return asin;
+  // DataDive changed asin from string to object — extract the value
+  if (typeof asin.asin === "string") return asin.asin;
+  if (typeof asin.value === "string") return asin.value;
+  // Fallback: stringify so downstream at least gets something
+  return JSON.stringify(asin);
+}
+
 export function transformRankTracker(raw: {
   id: string;
-  asin: string;
+  asin: string | Record<string, unknown>;
   marketplace: string;
   keywordCount?: number;
   title?: string | null;
@@ -248,7 +257,7 @@ export function transformRankTracker(raw: {
 }) {
   return {
     tracker_id: raw.id,
-    asin: raw.asin,
+    asin: extractAsin(raw.asin),
     marketplace: raw.marketplace,
     title: raw.title ?? null,
     image_url: raw.imageUrl ?? null,

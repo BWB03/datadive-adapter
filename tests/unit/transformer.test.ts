@@ -115,6 +115,13 @@ describe("transformCompetitor", () => {
     });
     expect(result.listing_creation_date).toBeNull();
   });
+
+  it("extracts ASIN from object format", () => {
+    const result = transformCompetitor({
+      asin: { asin: "B0098U0QC0", title: "Some Product" },
+    });
+    expect(result.asin).toBe("B0098U0QC0");
+  });
 });
 
 describe("transformNicheStatistics", () => {
@@ -168,6 +175,35 @@ describe("transformRankingJuices", () => {
     expect(result.competitors[0].asin).toBe("B0098U0QC0");
     expect(result.competitors[0].listing.total_ranking_juice).toBe(1895870);
   });
+
+  it("extracts ASIN from object format in competitors", () => {
+    const result = transformRankingJuices({
+      currentListing: {
+        rankingJuice: 100,
+        title: { rankingJuice: 50 },
+        bullets: { rankingJuice: 30 },
+        description: { rankingJuice: 20 },
+      },
+      optimizedListing: {
+        rankingJuice: 200,
+        title: { rankingJuice: 100 },
+        bullets: { rankingJuice: 60 },
+        description: { rankingJuice: 40 },
+      },
+      competitors: [
+        {
+          asin: { asin: "B0098U0QC0", title: "Product" },
+          listing: {
+            rankingJuice: 150,
+            title: { rankingJuice: 75 },
+            bullets: { rankingJuice: 45 },
+            description: { rankingJuice: 30 },
+          },
+        },
+      ],
+    });
+    expect(result.competitors[0].asin).toBe("B0098U0QC0");
+  });
 });
 
 describe("transformKeywordRoot", () => {
@@ -207,6 +243,15 @@ describe("transformRankTracker", () => {
     expect(result.tracker_id).toBe("rr-abc");
     expect(result.keyword_count).toBe(150);
     expect(result.top_10_keywords).toBe(25);
+  });
+
+  it("extracts ASIN from object format", () => {
+    const result = transformRankTracker({
+      id: "rr-abc",
+      asin: { asin: "B09DCJJ9R3", title: "Dog Hat" },
+      marketplace: "com",
+    });
+    expect(result.asin).toBe("B09DCJJ9R3");
   });
 });
 
