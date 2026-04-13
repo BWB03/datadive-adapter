@@ -78,11 +78,19 @@ export async function listRankRadars(
 
 export async function getRankRadar(
   client: DataDiveClient,
-  rankRadarId: string
+  rankRadarId: string,
+  opts?: { startDate?: string; endDate?: string }
 ) {
+  // DataDive now requires startDate/endDate — default to last 30 days
+  const end = opts?.endDate ?? new Date().toISOString().slice(0, 10);
+  const start =
+    opts?.startDate ??
+    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
   return client.get(
     `/v1/niches/rank-radars/${encodeURIComponent(rankRadarId)}`,
-    GetRankRadarResponseSchema
+    GetRankRadarResponseSchema,
+    { startDate: start, endDate: end }
   );
 }
 

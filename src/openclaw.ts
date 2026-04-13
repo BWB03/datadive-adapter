@@ -132,9 +132,12 @@ export class DataDiveSkill {
     }
   }
 
-  async getRankRadar(rankRadarId: string): Promise<UniversalEnvelope> {
+  async getRankRadar(
+    rankRadarId: string,
+    opts?: { startDate?: string; endDate?: string }
+  ): Promise<UniversalEnvelope> {
     try {
-      const raw = await getRankRadar(this.client, rankRadarId);
+      const raw = await getRankRadar(this.client, rankRadarId, opts);
       return toUniversalEnvelope(
         "keyword_rank_history",
         transformPassthrough(raw)

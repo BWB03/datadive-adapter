@@ -7,6 +7,7 @@ import {
   getRankingJuices,
   getKeywordRoots,
   listRankRadars,
+  getRankRadar,
 } from "../../src/adapter/endpoints.js";
 import listNichesFixture from "../fixtures/list-niches.json";
 import getKeywordsFixture from "../fixtures/get-keywords.json";
@@ -75,5 +76,31 @@ describe("endpoints", () => {
       { page: undefined, pageSize: undefined }
     );
     expect(result.data.data).toHaveLength(1);
+  });
+
+  it("getRankRadar passes startDate/endDate params with defaults", async () => {
+    const client = mockClient({});
+    await getRankRadar(client, "rr-abc");
+    expect(client.get).toHaveBeenCalledWith(
+      "/v1/niches/rank-radars/rr-abc",
+      expect.anything(),
+      expect.objectContaining({
+        startDate: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+        endDate: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
+      })
+    );
+  });
+
+  it("getRankRadar uses custom dates when provided", async () => {
+    const client = mockClient({});
+    await getRankRadar(client, "rr-abc", {
+      startDate: "2026-01-01",
+      endDate: "2026-03-01",
+    });
+    expect(client.get).toHaveBeenCalledWith(
+      "/v1/niches/rank-radars/rr-abc",
+      expect.anything(),
+      { startDate: "2026-01-01", endDate: "2026-03-01" }
+    );
   });
 });

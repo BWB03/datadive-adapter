@@ -168,11 +168,18 @@ server.tool(
 // --- 7. Get Rank Radar ---
 server.tool(
   "datadive_get_rank_radar",
-  "Get keyword ranking data for a specific Rank Radar tracker including historical rank positions and search volume.",
-  { rank_radar_id: z.string() },
-  async ({ rank_radar_id }) => {
+  "Get keyword ranking data for a specific Rank Radar tracker including historical rank positions and search volume. Defaults to last 30 days if dates not specified.",
+  {
+    rank_radar_id: z.string().describe("The Rank Radar tracker ID"),
+    start_date: z.string().optional().describe("Start date (ISO 8601, e.g. 2026-03-14). Defaults to 30 days ago."),
+    end_date: z.string().optional().describe("End date (ISO 8601, e.g. 2026-04-13). Defaults to today."),
+  },
+  async ({ rank_radar_id, start_date, end_date }) => {
     try {
-      const raw = await getRankRadar(client, rank_radar_id);
+      const raw = await getRankRadar(client, rank_radar_id, {
+        startDate: start_date,
+        endDate: end_date,
+      });
       const envelope = toUniversalEnvelope("keyword_rank_history", transformPassthrough(raw));
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
