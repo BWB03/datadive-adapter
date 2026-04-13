@@ -1,0 +1,67 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": "2b081962-c5da-432f-ac74-b35022c9565b",
+      "keyword": "lice shampoo",
+      "searchVolume": 26775,
+      "relevancy": 0.7,
+      "ranks": [
+        {
+          "date": "2026-04-10",
+          "organicRank": 3,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-11",
+          "organicRank": 3,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-12",
+          "organicRank": 3,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-13",
+          "organicRank": 3,
+          "impressionRank": null
+        }
+      ],
+      "adData": null,
+      "sqpData": null,
+      "highlights": []
+    },
+    {
+      "id": "9db1fc91-d829-4ee9-ac9c-a5105468939a",
+      "keyword": "lice treatment for kids",
+      "searchVolume": 15671,
+      "relevancy": 0.65,
+      "ranks": [
+        {
+          "date": "2026-04-10",
+          "organicRank": 8,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-11",
+          "organicRank": 10,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-12",
+          "organicRank": 60,
+          "impressionRank": null
+        },
+        {
+          "date": "2026-04-13",
+          "organicRank": 15,
+          "impressionRank": null
+        }
+      ],
+      "adData": null,
+      "sqpData": null,
+      "highlights": []
+    }
+  ]
+}

@@ -180,7 +180,8 @@ server.tool(
         startDate: start_date,
         endDate: end_date,
       });
-      const envelope = toUniversalEnvelope("keyword_rank_history", transformPassthrough(raw));
+      const keywords = raw.data.map(transformKeywordRankHistory);
+      const envelope = toUniversalEnvelope("keyword_rank_history", keywords);
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);

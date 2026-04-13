@@ -6,6 +6,7 @@ import {
   GetRankingJuicesResponseSchema,
   GetKeywordRootsResponseSchema,
   ListRankRadarsResponseSchema,
+  GetRankRadarResponseSchema,
   NicheSchema,
   MklKeywordSchema,
 } from "../../src/schema/datadive.js";
@@ -17,6 +18,7 @@ import {
   RankingJuiceSummarySchema,
   KeywordRootSummarySchema,
   RankTrackerSchema,
+  KeywordRankHistorySchema,
   PaginationSchema,
 } from "../../src/schema/universal.js";
 import listNichesFixture from "../fixtures/list-niches.json";
@@ -25,6 +27,7 @@ import getCompetitorsFixture from "../fixtures/get-competitors.json";
 import getRankingJuicesFixture from "../fixtures/get-ranking-juices.json";
 import getKeywordRootsFixture from "../fixtures/get-keyword-roots.json";
 import listRankRadarsFixture from "../fixtures/list-rank-radars.json";
+import getRankRadarFixture from "../fixtures/get-rank-radar.json";
 
 describe("DataDive schemas", () => {
   it("parses list niches response", () => {
@@ -80,6 +83,15 @@ describe("DataDive schemas", () => {
   it("validates individual keyword", () => {
     const kw = MklKeywordSchema.parse(getKeywordsFixture.data.keywords[0]);
     expect(kw.asinRanks?.["B00083B1DY"]).toBe(4);
+  });
+
+  it("parses get rank radar response", () => {
+    const result = GetRankRadarResponseSchema.parse(getRankRadarFixture);
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveLength(2);
+    expect(result.data[0].keyword).toBe("lice shampoo");
+    expect(result.data[0].ranks).toHaveLength(4);
+    expect(result.data[0].ranks![0].organicRank).toBe(3);
   });
 
   it("parses competitor with object ASIN", () => {
@@ -233,6 +245,20 @@ describe("Universal schemas", () => {
       top_50_search_volume: 120000,
     });
     expect(result.keyword_count).toBe(150);
+  });
+
+  it("validates keyword rank history", () => {
+    const result = KeywordRankHistorySchema.parse({
+      keyword_id: "kw1",
+      keyword: "lice shampoo",
+      search_volume: 26775,
+      relevancy_score: 0.7,
+      ranks: [
+        { date: "2026-04-10", organic_rank: 3, impression_rank: null },
+      ],
+      highlights: [],
+    });
+    expect(result.ranks[0].organic_rank).toBe(3);
   });
 
   it("validates universal envelope", () => {

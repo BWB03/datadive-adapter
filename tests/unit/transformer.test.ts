@@ -256,24 +256,35 @@ describe("transformRankTracker", () => {
 });
 
 describe("transformKeywordRankHistory", () => {
-  it("maps keyword rank history", () => {
+  it("maps keyword rank history with proper rank shape", () => {
     const result = transformKeywordRankHistory({
       id: "kw1",
-      keyword: "dog hat",
-      searchVolume: 12000,
-      ranks: [{ date: "2026-03-14", rank: 5 }],
+      keyword: "lice shampoo",
+      searchVolume: 26775,
+      relevancy: 0.7,
+      ranks: [
+        { date: "2026-04-10", organicRank: 3, impressionRank: null },
+        { date: "2026-04-11", organicRank: 5, impressionRank: 2 },
+      ],
       highlights: [],
     });
     expect(result.keyword_id).toBe("kw1");
-    expect(result.ranks).toHaveLength(1);
+    expect(result.keyword).toBe("lice shampoo");
+    expect(result.search_volume).toBe(26775);
+    expect(result.relevancy_score).toBe(0.7);
+    expect(result.ranks).toHaveLength(2);
+    expect(result.ranks[0]).toEqual({ date: "2026-04-10", organic_rank: 3, impression_rank: null });
+    expect(result.ranks[1].organic_rank).toBe(5);
+    expect(result.ranks[1].impression_rank).toBe(2);
   });
 
-  it("handles missing id", () => {
+  it("handles missing id and empty ranks", () => {
     const result = transformKeywordRankHistory({
       keyword: "test",
     });
     expect(result.keyword_id).toBeNull();
     expect(result.ranks).toEqual([]);
+    expect(result.relevancy_score).toBeNull();
   });
 });
 

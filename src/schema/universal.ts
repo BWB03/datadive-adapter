@@ -131,11 +131,18 @@ export const RankTrackerSchema = z.object({
   top_50_search_volume: z.unknown().optional(),
 });
 
+export const RankEntrySchema = z.object({
+  date: z.string(),
+  organic_rank: z.number().nullable(),
+  impression_rank: z.number().nullable(),
+});
+
 export const KeywordRankHistorySchema = z.object({
-  keyword_id: z.string().optional(),
+  keyword_id: z.string().nullable().optional(),
   keyword: z.string(),
   search_volume: z.number().nullable().optional(),
-  ranks: z.array(z.unknown()).optional(),
+  relevancy_score: z.number().nullable().optional(),
+  ranks: z.array(RankEntrySchema),
   highlights: z.array(z.unknown()).optional(),
 });
 

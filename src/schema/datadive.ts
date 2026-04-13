@@ -229,17 +229,29 @@ export const ListRankRadarsResponseSchema = z.object({
 
 // --- 7. Get Rank Radar (keyword rankings) ---
 
+export const KrtRankEntrySchema = z.object({
+  date: z.string(),
+  organicRank: z.number().nullable().optional(),
+  impressionRank: z.number().nullable().optional(),
+}).passthrough();
+
 export const KrtKeywordSchema = z
   .object({
     id: z.string().optional(),
     keyword: z.string(),
     searchVolume: z.number().nullable().optional(),
-    ranks: z.array(z.unknown()).optional(),
+    relevancy: z.number().nullable().optional(),
+    ranks: z.array(KrtRankEntrySchema).optional(),
+    adData: z.unknown().nullable().optional(),
+    sqpData: z.unknown().nullable().optional(),
     highlights: z.array(z.unknown()).optional(),
   })
   .passthrough();
 
-export const GetRankRadarResponseSchema = z.unknown();
+export const GetRankRadarResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.array(KrtKeywordSchema),
+});
 
 // --- 8. Get Dive Status ---
 // Error shape: { message, success }

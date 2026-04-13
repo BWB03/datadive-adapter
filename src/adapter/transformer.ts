@@ -273,14 +273,24 @@ export function transformKeywordRankHistory(raw: {
   id?: string;
   keyword: string;
   searchVolume?: number | null;
-  ranks?: unknown[];
+  relevancy?: number | null;
+  ranks?: Array<{
+    date: string;
+    organicRank?: number | null;
+    impressionRank?: number | null;
+  }>;
   highlights?: unknown[];
 }) {
   return {
     keyword_id: raw.id ?? null,
     keyword: raw.keyword,
     search_volume: raw.searchVolume ?? null,
-    ranks: raw.ranks ?? [],
+    relevancy_score: raw.relevancy ?? null,
+    ranks: (raw.ranks ?? []).map((r) => ({
+      date: r.date,
+      organic_rank: r.organicRank ?? null,
+      impression_rank: r.impressionRank ?? null,
+    })),
     highlights: raw.highlights ?? [],
   };
 }

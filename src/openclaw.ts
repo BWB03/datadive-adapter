@@ -138,10 +138,8 @@ export class DataDiveSkill {
   ): Promise<UniversalEnvelope> {
     try {
       const raw = await getRankRadar(this.client, rankRadarId, opts);
-      return toUniversalEnvelope(
-        "keyword_rank_history",
-        transformPassthrough(raw)
-      );
+      const keywords = raw.data.map(transformKeywordRankHistory);
+      return toUniversalEnvelope("keyword_rank_history", keywords);
     } catch (err) {
       return this.handleError(err);
     }
