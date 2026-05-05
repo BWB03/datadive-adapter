@@ -1,5 +1,7 @@
 node_modules/
 dist/
+.mcpb-build/
+release/
 .env
 *.tsbuildinfo
 tests/fixtures/raw/

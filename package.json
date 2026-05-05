@@ -1,17 +1,25 @@
 {
   "name": "datadive-adapter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SkillCrate adapter: MCP server + OpenClaw skill for DataDive Amazon analytics",
   "type": "module",
   "bin": {
     "datadive-adapter": "./dist/index.js"
   },
   "exports": {
-    ".": "./dist/openclaw.js"
+    ".": "./dist/openclaw.js",
+    "./client": "./dist/adapter/client.js",
+    "./endpoints": "./dist/adapter/endpoints.js",
+    "./transformer": "./dist/adapter/transformer.js",
+    "./schema": "./dist/schema/universal.js",
+    "./constants": "./dist/constants.js"
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
+    "mcpb:stage": "node scripts/prepare-mcpb.mjs",
+    "mcpb:validate": "npm run build && npm run mcpb:stage && mcpb validate .mcpb-build",
+    "mcpb:pack": "npm run build && npm run mcpb:stage && mcpb validate .mcpb-build && node scripts/pack-mcpb.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:integration": "vitest run --config vitest.integration.config.ts",
@@ -25,6 +33,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
     "@types/node": "^22.15.3",
     "tsup": "^8.4.0",
     "tsx": "^4.19.4",

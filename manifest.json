@@ -1,0 +1,116 @@
+{
+  "manifest_version": "0.3",
+  "name": "datadive-adapter",
+  "display_name": "DataDive Adapter",
+  "version": "1.0.1",
+  "description": "MCP server for DataDive Amazon analytics tools.",
+  "long_description": "DataDive Adapter exposes DataDive Amazon analytics as MCP tools for niche research, keyword intelligence, competitor analysis, rank tracking, Niche Dive jobs, and AI copywriting workflows.",
+  "author": {
+    "name": "SkillCrate",
+    "url": "https://skillcrate.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BWB03/datadive-adapter.git"
+  },
+  "homepage": "https://skillcrate.dev",
+  "documentation": "https://github.com/BWB03/datadive-adapter#readme",
+  "support": "https://github.com/BWB03/datadive-adapter/issues",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
+      "env": {
+        "DATADIVE_API_KEY": "${user_config.datadive_api_key}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "datadive_list_niches",
+      "description": "List DataDive niches."
+    },
+    {
+      "name": "datadive_get_keywords",
+      "description": "Get keyword data for a niche."
+    },
+    {
+      "name": "datadive_get_competitors",
+      "description": "Get competitor ASINs and niche statistics."
+    },
+    {
+      "name": "datadive_get_ranking_juices",
+      "description": "Get ranking factor analysis for a niche."
+    },
+    {
+      "name": "datadive_get_keyword_roots",
+      "description": "Get keyword root groupings for a niche."
+    },
+    {
+      "name": "datadive_list_rank_radars",
+      "description": "List Rank Radar trackers."
+    },
+    {
+      "name": "datadive_get_rank_radar",
+      "description": "Get keyword ranking data for a Rank Radar tracker."
+    },
+    {
+      "name": "datadive_get_dive_status",
+      "description": "Check the status of a Niche Dive research job."
+    },
+    {
+      "name": "datadive_create_dive",
+      "description": "Create a new Niche Dive research job."
+    },
+    {
+      "name": "datadive_create_rank_radar",
+      "description": "Create a Rank Radar keyword tracker."
+    },
+    {
+      "name": "datadive_ai_copywriter",
+      "description": "Generate optimized listing copy for a niche."
+    },
+    {
+      "name": "datadive_delete_niche",
+      "description": "Delete a niche and associated research data."
+    },
+    {
+      "name": "datadive_delete_rank_radar",
+      "description": "Delete a Rank Radar keyword tracker."
+    }
+  ],
+  "keywords": [
+    "datadive",
+    "amazon",
+    "analytics",
+    "mcp",
+    "skillcrate"
+  ],
+  "license": "MIT",
+  "privacy_policies": [
+    "https://datadive.tools/privacy-policy"
+  ],
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "user_config": {
+    "datadive_api_key": {
+      "type": "string",
+      "title": "DataDive API Key",
+      "description": "Your DataDive API key.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}
