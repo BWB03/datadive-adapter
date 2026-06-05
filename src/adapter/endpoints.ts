@@ -20,8 +20,11 @@ export async function listNiches(
   client: DataDiveClient,
   opts?: { page?: number; pageSize?: number }
 ) {
+  // DataDive's API names the page selector `currentPage`, not `page`
+  // (see GET /v1/niches in the DataDive OpenAPI spec). Sending `page`
+  // is silently ignored and the API always returns page 1.
   return client.get("/v1/niches", ListNichesResponseSchema, {
-    page: opts?.page,
+    currentPage: opts?.page,
     pageSize: opts?.pageSize,
   });
 }
@@ -68,11 +71,26 @@ export async function getKeywordRoots(
 
 export async function listRankRadars(
   client: DataDiveClient,
-  opts?: { page?: number; pageSize?: number }
+  opts?: {
+    page?: number;
+    pageSize?: number;
+    nicheId?: string;
+    status?: string;
+    searchText?: string;
+  }
 ) {
+  // DataDive's API names the page selector `currentPage`, not `page` (the
+  // adapter previously sent `page`, which the API ignores — every call
+  // returned page 1). It also supports `nicheId`/`status`/`searchText`
+  // filters; `searchText` matches an ASIN or product title, which is the
+  // server-side ASIN filter callers want. See GET /v1/niches/rank-radars
+  // in the DataDive OpenAPI spec. Undefined values are dropped by client.get.
   return client.get("/v1/niches/rank-radars", ListRankRadarsResponseSchema, {
-    page: opts?.page,
+    currentPage: opts?.page,
     pageSize: opts?.pageSize,
+    nicheId: opts?.nicheId,
+    status: opts?.status,
+    searchText: opts?.searchText,
   });
 }
 

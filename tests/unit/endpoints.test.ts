@@ -29,7 +29,7 @@ describe("endpoints", () => {
     expect(client.get).toHaveBeenCalledWith(
       "/v1/niches",
       expect.anything(),
-      { page: 2, pageSize: 10 }
+      { currentPage: 2, pageSize: 10 }
     );
     expect(result.data).toHaveLength(2);
   });
@@ -73,9 +73,37 @@ describe("endpoints", () => {
     expect(client.get).toHaveBeenCalledWith(
       "/v1/niches/rank-radars",
       expect.anything(),
-      { page: undefined, pageSize: undefined }
+      {
+        currentPage: undefined,
+        pageSize: undefined,
+        nicheId: undefined,
+        status: undefined,
+        searchText: undefined,
+      }
     );
     expect(result.data.data).toHaveLength(1);
+  });
+
+  it("listRankRadars maps page->currentPage and passes filters through", async () => {
+    const client = mockClient(listRankRadarsFixture);
+    await listRankRadars(client, {
+      page: 3,
+      pageSize: 50,
+      nicheId: "WBcpBay2EO",
+      status: "active",
+      searchText: "B09DCJJ9R3",
+    });
+    expect(client.get).toHaveBeenCalledWith(
+      "/v1/niches/rank-radars",
+      expect.anything(),
+      {
+        currentPage: 3,
+        pageSize: 50,
+        nicheId: "WBcpBay2EO",
+        status: "active",
+        searchText: "B09DCJJ9R3",
+      }
+    );
   });
 
   it("getRankRadar passes startDate/endDate params with defaults", async () => {

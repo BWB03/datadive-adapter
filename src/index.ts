@@ -148,11 +148,38 @@ server.tool(
 // --- 6. List Rank Radars ---
 server.tool(
   "datadive_list_rank_radars",
-  "List all Rank Radar keyword trackers. Returns ASIN, keyword count, and top 10/50 ranking summary metrics.",
-  { page: z.number().int().optional(), page_size: z.number().int().optional() },
-  async ({ page, page_size }) => {
+  "List Rank Radar keyword trackers. Returns ASIN, keyword count, and top 10/50 ranking summary metrics. Supports pagination (page up to page_size 50) and server-side filtering: search_text matches an ASIN or product title, niche_id scopes to one niche, status filters by tracker status.",
+  {
+    page: z.number().int().optional(),
+    page_size: z
+      .number()
+      .int()
+      .optional()
+      .describe("Items per page (default 20, max 50)."),
+    niche_id: z
+      .string()
+      .optional()
+      .describe("Filter Rank Radars by Niche identifier."),
+    status: z
+      .string()
+      .optional()
+      .describe("Filter by Rank Radar status. Defaults to active only."),
+    search_text: z
+      .string()
+      .optional()
+      .describe(
+        "Filter Rank Radars by ASIN or product title (server-side substring match). Pass an ASIN to find that product's trackers directly."
+      ),
+  },
+  async ({ page, page_size, niche_id, status, search_text }) => {
     try {
-      const raw = await listRankRadars(client, { page, pageSize: page_size });
+      const raw = await listRankRadars(client, {
+        page,
+        pageSize: page_size,
+        nicheId: niche_id,
+        status,
+        searchText: search_text,
+      });
       const inner = raw.data;
       const data = inner.data.map(transformRankTracker);
       const envelope = toUniversalEnvelope("rank_tracker", data, {
