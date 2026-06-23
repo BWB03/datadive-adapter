@@ -90,7 +90,7 @@ describe("endpoints", () => {
       page: 3,
       pageSize: 50,
       nicheId: "WBcpBay2EO",
-      status: "active",
+      status: "PAUSED",
       searchText: "B09DCJJ9R3",
     });
     expect(client.get).toHaveBeenCalledWith(
@@ -100,7 +100,7 @@ describe("endpoints", () => {
         currentPage: 3,
         pageSize: 50,
         nicheId: "WBcpBay2EO",
-        status: "active",
+        status: "PAUSED",
         searchText: "B09DCJJ9R3",
       }
     );

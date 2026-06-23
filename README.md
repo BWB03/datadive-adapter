@@ -128,7 +128,7 @@ const copy = await skill.triggerAiCopywriter("nicheId", "ranking-juice");
 | `datadive_get_competitors` | Competitor ASINs, sales, revenue, ranking juice, niche statistics | `niche_id` |
 | `datadive_get_ranking_juices` | Ranking factor analysis (current vs optimized listing) | `niche_id` |
 | `datadive_get_keyword_roots` | Keyword root groupings with competing products | `niche_id` |
-| `datadive_list_rank_radars` | List Rank Radar keyword trackers (filter by ASIN/title, niche, status) | `page?`, `page_size?`, `niche_id?`, `status?`, `search_text?` |
+| `datadive_list_rank_radars` | List Rank Radar keyword trackers (filter by ASIN/title, niche, status) | `page?`, `page_size?`, `niche_id?`, `status?` (`ALL`/`PAUSED`), `search_text?` |
 | `datadive_get_rank_radar` | Keyword ranking data with historical positions | `rank_radar_id` |
 | `datadive_get_dive_status` | Check status of a Niche Dive research job | `dive_id` |
 

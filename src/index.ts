@@ -148,7 +148,7 @@ server.tool(
 // --- 6. List Rank Radars ---
 server.tool(
   "datadive_list_rank_radars",
-  "List Rank Radar keyword trackers. Returns ASIN, keyword count, and top 10/50 ranking summary metrics. Supports pagination (page up to page_size 50) and server-side filtering: search_text matches an ASIN or product title, niche_id scopes to one niche, status filters by tracker status.",
+  "List Rank Radar keyword trackers. Returns ASIN, keyword count, and top 10/50 ranking summary metrics. Supports pagination (page up to page_size 50) and server-side filtering: search_text matches an ASIN or product title, niche_id scopes to one niche, and status can include all or paused trackers. Omit status to return active trackers.",
   {
     page: z.number().int().optional(),
     page_size: z
@@ -161,9 +161,9 @@ server.tool(
       .optional()
       .describe("Filter Rank Radars by Niche identifier."),
     status: z
-      .string()
+      .enum(["ALL", "PAUSED"])
       .optional()
-      .describe("Filter by Rank Radar status. Defaults to active only."),
+      .describe("Filter by Rank Radar status. Omit for active only; use ALL for all trackers or PAUSED for paused trackers."),
     search_text: z
       .string()
       .optional()

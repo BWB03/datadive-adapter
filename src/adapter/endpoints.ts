@@ -75,7 +75,7 @@ export async function listRankRadars(
     page?: number;
     pageSize?: number;
     nicheId?: string;
-    status?: string;
+    status?: "ALL" | "PAUSED";
     searchText?: string;
   }
 ) {
