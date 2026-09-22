@@ -7,6 +7,10 @@ import {
   getKeywordRoots,
   listRankRadars,
   getRankRadar,
+  getRankRadarPpc,
+  getRankRadarSqp,
+  type RankRadarOptions,
+  type RankRadarDateOptions,
   getDiveStatus,
   createDive,
   createRankRadar,
@@ -134,7 +138,7 @@ export class DataDiveSkill {
 
   async getRankRadar(
     rankRadarId: string,
-    opts?: { startDate?: string; endDate?: string }
+    opts?: RankRadarOptions
   ): Promise<UniversalEnvelope> {
     try {
       const raw = await getRankRadar(this.client, rankRadarId, opts);
@@ -149,6 +153,28 @@ export class DataDiveSkill {
     try {
       const raw = await getDiveStatus(this.client, diveId);
       return toUniversalEnvelope("dive_status", transformPassthrough(raw));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async getRankRadarPpc(
+    rankRadarId: string,
+    opts?: RankRadarDateOptions & { includeCampaigns?: boolean }
+  ): Promise<UniversalEnvelope> {
+    try {
+      return toUniversalEnvelope("rank_radar_ppc", await getRankRadarPpc(this.client, rankRadarId, opts));
+    } catch (err) {
+      return this.handleError(err);
+    }
+  }
+
+  async getRankRadarSqp(
+    rankRadarId: string,
+    opts?: RankRadarDateOptions
+  ): Promise<UniversalEnvelope> {
+    try {
+      return toUniversalEnvelope("rank_radar_sqp", await getRankRadarSqp(this.client, rankRadarId, opts));
     } catch (err) {
       return this.handleError(err);
     }

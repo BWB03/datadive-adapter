@@ -11,6 +11,8 @@ import {
   getKeywordRoots,
   listRankRadars,
   getRankRadar,
+  getRankRadarPpc,
+  getRankRadarSqp,
   getDiveStatus,
   createDive,
   createRankRadar,
@@ -195,20 +197,68 @@ server.tool(
 // --- 7. Get Rank Radar ---
 server.tool(
   "datadive_get_rank_radar",
-  "Get keyword ranking data for a specific Rank Radar tracker including historical rank positions and search volume. Defaults to last 30 days if dates not specified.",
+  "Get all tracked keywords for a Rank Radar, including historical rank positions and search volume. Fetches every page automatically. Defaults to the last 30 days. For PPC or SQP metrics use datadive_get_rank_radar_ppc or datadive_get_rank_radar_sqp.",
   {
     rank_radar_id: z.string().describe("The Rank Radar tracker ID"),
     start_date: z.string().optional().describe("Start date (ISO 8601, e.g. 2026-03-14). Defaults to 30 days ago."),
     end_date: z.string().optional().describe("End date (ISO 8601, e.g. 2026-04-13). Defaults to today."),
+    page_size: z.number().int().min(1).max(100).optional().describe("Keywords per API request (default 20, max 100). All pages are fetched."),
   },
-  async ({ rank_radar_id, start_date, end_date }) => {
+  async ({ rank_radar_id, start_date, end_date, page_size }) => {
     try {
       const raw = await getRankRadar(client, rank_radar_id, {
         startDate: start_date,
         endDate: end_date,
+        pageSize: page_size,
       });
       const keywords = raw.data.map(transformKeywordRankHistory);
       const envelope = toUniversalEnvelope("keyword_rank_history", keywords);
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+server.tool(
+  "datadive_get_rank_radar_ppc",
+  "Get per-keyword PPC metrics from the dedicated Rank Radar PPC endpoint: spend, sales, clicks, impressions, ACOS, and optional campaign breakdowns. Returns native DataDive metric fields. Defaults to the last 30 days.",
+  {
+    rank_radar_id: z.string().describe("The Rank Radar tracker ID"),
+    start_date: z.string().optional().describe("Start date (yyyy-mm-dd). Defaults to 30 days ago."),
+    end_date: z.string().optional().describe("End date (yyyy-mm-dd). Defaults to today."),
+    include_campaigns: z.boolean().optional().describe("Include per-campaign/ad-group breakdowns (default false)."),
+  },
+  async ({ rank_radar_id, start_date, end_date, include_campaigns }) => {
+    try {
+      const data = await getRankRadarPpc(client, rank_radar_id, {
+        startDate: start_date,
+        endDate: end_date,
+        includeCampaigns: include_campaigns,
+      });
+      const envelope = toUniversalEnvelope("rank_radar_ppc", data);
+      return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
+    } catch (err) {
+      return errorResult(err);
+    }
+  }
+);
+
+server.tool(
+  "datadive_get_rank_radar_sqp",
+  "Get per-keyword Search Query Performance metrics from the dedicated Rank Radar SQP endpoint: impressions, clicks, cart adds, purchases, CTR/CVR, and search query volume. Returns native DataDive metric fields. Defaults to the last 30 days.",
+  {
+    rank_radar_id: z.string().describe("The Rank Radar tracker ID"),
+    start_date: z.string().optional().describe("Start date (yyyy-mm-dd). Defaults to 30 days ago."),
+    end_date: z.string().optional().describe("End date (yyyy-mm-dd). Defaults to today."),
+  },
+  async ({ rank_radar_id, start_date, end_date }) => {
+    try {
+      const data = await getRankRadarSqp(client, rank_radar_id, {
+        startDate: start_date,
+        endDate: end_date,
+      });
+      const envelope = toUniversalEnvelope("rank_radar_sqp", data);
       return { content: [{ type: "text", text: JSON.stringify(envelope, null, 2) }] };
     } catch (err) {
       return errorResult(err);

@@ -129,7 +129,9 @@ const copy = await skill.triggerAiCopywriter("nicheId", "ranking-juice");
 | `datadive_get_ranking_juices` | Ranking factor analysis (current vs optimized listing) | `niche_id` |
 | `datadive_get_keyword_roots` | Keyword root groupings with competing products | `niche_id` |
 | `datadive_list_rank_radars` | List Rank Radar keyword trackers (filter by ASIN/title, niche, status) | `page?`, `page_size?`, `niche_id?`, `status?` (`ALL`/`PAUSED`), `search_text?` |
-| `datadive_get_rank_radar` | Keyword ranking data with historical positions | `rank_radar_id` |
+| `datadive_get_rank_radar` | All keyword ranking pages with historical positions | `rank_radar_id`, `start_date?`, `end_date?`, `page_size?` (1–100; default 20) |
+| `datadive_get_rank_radar_ppc` | Per-keyword PPC metrics and optional campaign breakdowns | `rank_radar_id`, `start_date?`, `end_date?`, `include_campaigns?` |
+| `datadive_get_rank_radar_sqp` | Per-keyword Search Query Performance metrics | `rank_radar_id`, `start_date?`, `end_date?` |
 | `datadive_get_dive_status` | Check status of a Niche Dive research job | `dive_id` |
 
 ### Write Tools (5)
@@ -266,3 +268,38 @@ The adapter pattern established here is the template for future adapters (Pacvue
 ## License
 
 MIT — [Voartex](https://voartex.com)
+
+## Rank Radar API migration (September 22, 2026)
+
+`getRankRadar()` and `datadive_get_rank_radar` automatically fetch all keyword
+pages using `currentPage` until `hasNext` is false. The API's new keyword list is
+nested at `data.data`; the adapter still returns its existing complete `data`
+array, and MCP/OpenClaw still return `keyword_rank_history`. The default page size
+is 20, configurable up to 100 (`pageSize` in TypeScript, `page_size` in MCP).
+Legacy flat responses remain supported during rollout. Later-page failures and
+stalled pagination fail the whole call instead of returning partial results.
+
+PPC and SQP metrics now have dedicated reads:
+
+```typescript
+const rankings = await skill.getRankRadar(rankRadarId, {
+  startDate: "2026-09-01", endDate: "2026-09-22", pageSize: 100,
+});
+const ppc = await skill.getRankRadarPpc(rankRadarId, {
+  startDate: "2026-09-01", endDate: "2026-09-22", includeCampaigns: true,
+});
+const sqp = await skill.getRankRadarSqp(rankRadarId, {
+  startDate: "2026-09-01", endDate: "2026-09-22",
+});
+```
+
+All three reads default to the last 30 days. The low-level endpoint exports also
+include `getRankRadarPpc(client, id, options)` and `getRankRadarSqp(client, id, options)`.
+The new `rank_radar_ppc` and `rank_radar_sqp` envelopes retain DataDive's native
+camelCase metric fields, nulls, and campaign details. Join their `id` to ranking
+history's `keyword_id`. Do not read removed `adData`/`sqpData` fields from keyword
+detail responses; those metrics are no longer supplied there. Existing normalized
+ranking history never exposed those fields, so its output remains unchanged.
+
+See [issue #3](https://github.com/BWB03/datadive-adapter/issues/3) and the
+[migration and downstream audit](docs/rank-radar-migration.md) for rollout status.

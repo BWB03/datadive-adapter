@@ -8,6 +8,9 @@ import {
   GetKeywordRootsResponseSchema,
   ListRankRadarsResponseSchema,
   GetRankRadarResponseSchema,
+  GetRankRadarPpcResponseSchema,
+  GetRankRadarSqpResponseSchema,
+  KrtKeywordSchema,
   GetDiveStatusResponseSchema,
   CreateDiveResponseSchema,
   CreateRankRadarResponseSchema,
@@ -94,21 +97,81 @@ export async function listRankRadars(
   });
 }
 
-export async function getRankRadar(
-  client: DataDiveClient,
-  rankRadarId: string,
-  opts?: { startDate?: string; endDate?: string }
-) {
-  // DataDive now requires startDate/endDate — default to last 30 days
+export interface RankRadarDateOptions {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface RankRadarOptions extends RankRadarDateOptions {
+  pageSize?: number;
+}
+
+function rankRadarDates(opts?: RankRadarDateOptions) {
+  // Resolve once per operation, so every page uses the same date range.
   const end = opts?.endDate ?? new Date().toISOString().slice(0, 10);
   const start =
     opts?.startDate ??
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
+  return { startDate: start, endDate: end };
+}
+
+export async function getRankRadar(
+  client: DataDiveClient,
+  rankRadarId: string,
+  opts?: RankRadarOptions
+) {
+  const pageSize = z.number().int().min(1).max(100).parse(opts?.pageSize ?? 20);
+  const dates = rankRadarDates(opts);
+  const keywords: z.infer<typeof KrtKeywordSchema>[] = [];
+  let currentPage = 1;
+
+  while (true) {
+    const response = await client.get(
+      `/v1/niches/rank-radars/${encodeURIComponent(rankRadarId)}`,
+      GetRankRadarResponseSchema,
+      { ...dates, currentPage, pageSize }
+    );
+    if (!response.success) throw new Error("DataDive Rank Radar request was unsuccessful");
+    if (Array.isArray(response.data)) {
+      if (currentPage !== 1) throw new Error("DataDive Rank Radar pagination disappeared mid-request");
+      return { success: true, data: response.data };
+    }
+
+    const page = response.data;
+    if (page.currentPage !== currentPage || (page.hasNext && page.data.length === 0)) {
+      throw new Error("DataDive Rank Radar pagination did not advance");
+    }
+    keywords.push(...page.data);
+    if (!page.hasNext) return { success: true, data: keywords };
+    currentPage = page.currentPage + 1;
+  }
+}
+
+export async function getRankRadarPpc(
+  client: DataDiveClient,
+  rankRadarId: string,
+  opts?: RankRadarDateOptions & { includeCampaigns?: boolean }
+) {
   return client.get(
-    `/v1/niches/rank-radars/${encodeURIComponent(rankRadarId)}`,
-    GetRankRadarResponseSchema,
-    { startDate: start, endDate: end }
+    `/v1/niches/rank-radars/${encodeURIComponent(rankRadarId)}/ppc`,
+    GetRankRadarPpcResponseSchema,
+    {
+      ...rankRadarDates(opts),
+      includeCampaigns: opts?.includeCampaigns === undefined ? undefined : String(opts.includeCampaigns),
+    }
+  );
+}
+
+export async function getRankRadarSqp(
+  client: DataDiveClient,
+  rankRadarId: string,
+  opts?: RankRadarDateOptions
+) {
+  return client.get(
+    `/v1/niches/rank-radars/${encodeURIComponent(rankRadarId)}/sqp`,
+    GetRankRadarSqpResponseSchema,
+    rankRadarDates(opts)
   );
 }
 
