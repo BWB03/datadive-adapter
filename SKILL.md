@@ -55,9 +55,23 @@ List all Rank Radar keyword trackers.
 - **Returns**: `rank_tracker[]` — ASIN, keyword counts, top 10/50 metrics
 
 ### datadive_get_rank_radar
-Get keyword ranking data for a specific Rank Radar tracker.
-- **Inputs**: `rank_radar_id` (required)
-- **Returns**: `keyword_rank_history` — historical rank positions, search volume
+Get all keyword ranking pages for a specific Rank Radar tracker automatically.
+- **Inputs**: `rank_radar_id` (required), `start_date`, `end_date`, `page_size` (optional; default 20, max 100)
+- **Returns**: `keyword_rank_history` — complete historical rank positions and search volume
+- Dates default to the last 30 days. Use the dedicated tools below for PPC/SQP metrics.
+
+### datadive_get_rank_radar_ppc
+Get per-keyword PPC metrics from the dedicated PPC endpoint.
+- **Inputs**: `rank_radar_id` (required), `start_date`, `end_date`, `include_campaigns` (optional)
+- **Returns**: `rank_radar_ppc[]` — native DataDive metric fields and optional campaign breakdowns
+
+### datadive_get_rank_radar_sqp
+Get per-keyword Search Query Performance metrics from the dedicated SQP endpoint.
+- **Inputs**: `rank_radar_id` (required), `start_date`, `end_date` (optional)
+- **Returns**: `rank_radar_sqp[]` — native DataDive impressions, clicks, purchases, shares, and query volume
+
+Both metric tools default to the last 30 days. Join their `id` with ranking
+history's `keyword_id`; PPC/SQP metrics are no longer part of keyword detail responses.
 
 ### datadive_get_dive_status
 Check the status of a Niche Dive research job.

@@ -248,10 +248,32 @@ export const KrtKeywordSchema = z
   })
   .passthrough();
 
-export const GetRankRadarResponseSchema = z.object({
-  success: z.boolean(),
+// September 2026 moves the keyword list into data.data. Keep the legacy
+// array during rollout; require pagination controls so we never truncate silently.
+export const RankRadarKeywordPageSchema = z.object({
+  currentPage: z.number().int().min(1),
+  total: z.number().int().nonnegative(),
+  hasNext: z.boolean(),
+  pageSize: z.number().int().positive().optional(),
+  hasPrev: z.boolean().optional(),
+  lastPage: z.number().int().nonnegative().optional(),
   data: z.array(KrtKeywordSchema),
 });
+
+export const GetRankRadarResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.union([RankRadarKeywordPageSchema, z.array(KrtKeywordSchema)]),
+});
+
+// The dedicated PPC/SQP endpoints document bare arrays. Preserve the native
+// metric fields (including nullable values and optional campaign breakdowns).
+export const RankRadarMetricsKeywordSchema = z.object({
+  id: z.string(),
+  keyword: z.string(),
+}).passthrough();
+
+export const GetRankRadarPpcResponseSchema = z.array(RankRadarMetricsKeywordSchema);
+export const GetRankRadarSqpResponseSchema = z.array(RankRadarMetricsKeywordSchema);
 
 // --- 8. Get Dive Status ---
 // Error shape: { message, success }

@@ -1,11 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { beforeAll, describe, it, expect } from "vitest";
 import { DataDiveSkill } from "../../src/openclaw.js";
 import { UniversalEnvelopeSchema } from "../../src/schema/universal.js";
 
 const API_KEY = process.env.DATADIVE_API_KEY;
 
 describe.skipIf(!API_KEY)("DataDive Live API", () => {
-  const skill = new DataDiveSkill(API_KEY);
+  let skill: DataDiveSkill;
+  beforeAll(() => {
+    skill = new DataDiveSkill(API_KEY);
+  });
 
   it("lists niches", async () => {
     const result = await skill.listNiches();
@@ -74,5 +77,19 @@ describe.skipIf(!API_KEY)("DataDive Live API", () => {
     const result = await skill.getDiveStatus("nonexistent-id");
     const parsed = UniversalEnvelopeSchema.parse(result);
     expect(parsed.data_type).toBe("error");
+  });
+
+  it.each(["ppc", "sqp"] as const)("gets dedicated Rank Radar %s metrics", async (kind) => {
+    const radars = await skill.listRankRadars();
+    expect(radars.error).toBeUndefined();
+    const data = radars.data as Array<{ tracker_id: string }>;
+    if (data.length === 0) return;
+
+    const result = kind === "ppc"
+      ? await skill.getRankRadarPpc(data[0].tracker_id, { includeCampaigns: true })
+      : await skill.getRankRadarSqp(data[0].tracker_id);
+    expect(result.error).toBeUndefined();
+    expect(result.data_type).toBe(`rank_radar_${kind}`);
+    expect(Array.isArray(result.data)).toBe(true);
   });
 });

@@ -107,7 +107,7 @@ describe("endpoints", () => {
   });
 
   it("getRankRadar passes startDate/endDate params with defaults", async () => {
-    const client = mockClient({});
+    const client = mockClient({ success: true, data: [] });
     await getRankRadar(client, "rr-abc");
     expect(client.get).toHaveBeenCalledWith(
       "/v1/niches/rank-radars/rr-abc",
@@ -120,7 +120,7 @@ describe("endpoints", () => {
   });
 
   it("getRankRadar uses custom dates when provided", async () => {
-    const client = mockClient({});
+    const client = mockClient({ success: true, data: [] });
     await getRankRadar(client, "rr-abc", {
       startDate: "2026-01-01",
       endDate: "2026-03-01",
@@ -128,7 +128,7 @@ describe("endpoints", () => {
     expect(client.get).toHaveBeenCalledWith(
       "/v1/niches/rank-radars/rr-abc",
       expect.anything(),
-      { startDate: "2026-01-01", endDate: "2026-03-01" }
+      { startDate: "2026-01-01", endDate: "2026-03-01", currentPage: 1, pageSize: 20 }
     );
   });
 });

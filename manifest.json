@@ -59,6 +59,14 @@
       "description": "Get keyword ranking data for a Rank Radar tracker."
     },
     {
+      "name": "datadive_get_rank_radar_ppc",
+      "description": "Get Rank Radar PPC metrics and optional campaign breakdowns."
+    },
+    {
+      "name": "datadive_get_rank_radar_sqp",
+      "description": "Get Rank Radar Search Query Performance metrics."
+    },
+    {
       "name": "datadive_get_dive_status",
       "description": "Check the status of a Niche Dive research job."
     },

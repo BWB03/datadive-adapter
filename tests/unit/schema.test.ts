@@ -88,6 +88,7 @@ describe("DataDive schemas", () => {
   it("parses get rank radar response", () => {
     const result = GetRankRadarResponseSchema.parse(getRankRadarFixture);
     expect(result.success).toBe(true);
+    if (!Array.isArray(result.data)) throw new Error("Expected legacy fixture");
     expect(result.data).toHaveLength(2);
     expect(result.data[0].keyword).toBe("lice shampoo");
     expect(result.data[0].ranks).toHaveLength(4);
